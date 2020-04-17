@@ -1,0 +1,48 @@
+{% load admin_urls %}
+<h3> Selected publications </h3>
+<table>
+    <th>Title</th> <th>Go Back</th> <th>Go Forward</th>
+    {% for publication in selected_publications %}
+    <tr>
+        <td><a href="{{ publication.link }}" target="_blank">{{ publication.title }}</a></td>
+        <td>
+            {% if publication.file %}
+                {% if publication.cites_calculated %}
+                    Done
+                {% else %}
+                    <a href="{% url 'make_cites' publication.pk %}">Make</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'admin:crystal_publication_change' publication.pk  %}"> Need File </a>
+            {% endif %}
+        </td>
+        <td>
+            {% if publication.url %}
+                {% if publication.cited_by_calculated %}
+                    Done
+                {% else %}
+                    <a href="{% url 'make_cited_by' publication.pk %}">Make</a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'admin:crystal_publication_change' publication.pk  %}"> Need URL </a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3> Uploaded Publications </h3>
+
+<p> Uploaded publications here. </p>
+
+<h3> Suggested Publications </h3>
+<table>
+    <th>Title</th><th>Relations</th><th>Edit</th>
+    {% for publication in related_publications %}
+    <tr>
+        <td><a href="{{ publication.link }}" target="_blank">{{ publication.title }}</a></td>
+        <td>{{publication.n_related}}</td>
+        <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
+    </tr>
+    {% endfor %}
+</table>
