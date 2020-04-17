@@ -6,6 +6,7 @@ from fuzzywuzzy import process, fuzz
 from django.contrib.auth.models import User
 from scholarly import search_pubs_query
 from urllib import parse
+from django.urls import reverse
 
 
 class NoPublicationFileError(ValueError):
@@ -201,11 +202,11 @@ class Publication(models.Model):
 
     def link(self):
         # if it's got a file, show the file
-        #if self.file is not None:
-        #    return self.file.path
+        if self.file is not None:
+            return reverse('show_pdf', kwargs={"publication_id": self.pk})
         # otherwise, make a Google Scholar link
-        #else:
-        return "https://scholar.google.com/scholar?q={}".format(parse.quote(self.title, safe=""))
+        else:
+            return "https://scholar.google.com/scholar?q={}".format(parse.quote(self.title, safe=""))
 
     def include(self):
         self.network_status = Publication.INCLUDED

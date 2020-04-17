@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from .models import Publication, Profile
 
@@ -8,9 +8,6 @@ def index(request):
 
 
 def rank(request):
-    # TODO: switch over to a user-based system where each 
-    # user has a single active project they're asking about?
-
     user = request.user
     if user is None:
         return HttpResponse("Please log in")
@@ -24,6 +21,7 @@ def rank(request):
 
     context = {
         'selected_publications': network.publication_set.filter(network_status=Publication.INCLUDED),
+        'uploaded_publications': network.publication_set.filter(network_status=Publication.UPLOADED),
         'related_publications': related_publications
     }
     return render(request, 'crystal/rank.html', context)
@@ -35,10 +33,15 @@ def make_cites(request, publication_id):
     pub.make_cites()
     return redirect('rank')
 
+
 def make_cited_by(request, publication_id):
     pub = Publication.objects.get(pk=publication_id)
     print(pub)
     pub.make_cited_by()
     return redirect('rank')
 
+
+def show_pdf(request, publication_id):
+    pub = Publication.objects.get(pk=publication_id)
+    return FileResponse(open(pub.file.path, 'rb'), content_type='application/pdf')
 

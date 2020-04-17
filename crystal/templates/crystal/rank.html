@@ -17,23 +17,27 @@
             {% endif %}
         </td>
         <td>
-            {% if publication.url %}
-                {% if publication.cited_by_calculated %}
-                    Done
-                {% else %}
-                    <a href="{% url 'make_cited_by' publication.pk %}">Make</a>
-                {% endif %}
+            {% if publication.cited_by_calculated %}
+                Done
             {% else %}
-                <a href="{% url 'admin:crystal_publication_change' publication.pk  %}"> Need URL </a>
+                <a href="{% url 'make_cited_by' publication.pk %}">Make</a>
             {% endif %}
         </td>
     </tr>
     {% endfor %}
 </table>
 
-<h3> Uploaded Publications </h3>
-
-<p> Uploaded publications here. </p>
+<h3> Uploaded Publications <a href="{% url 'admin:crystal_publication_add' %}" target="_blank">(new)</a></h3>
+<table>
+    <th>Title</th><th>Relations</th><th>Edit</th>
+    {% for publication in uploaded_publications %}
+    <tr>
+        <td><a href="{{ publication.link }}" target="_blank">{{ publication.title }}</a></td>
+        <td>{{publication.n_related}}</td>
+        <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
+    </tr>
+    {% endfor %}
+</table>
 
 <h3> Suggested Publications </h3>
 <table>
