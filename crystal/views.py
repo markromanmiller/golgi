@@ -1,4 +1,4 @@
-from django.http import HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse, Http404
 from django.shortcuts import render, redirect
 from .models import Publication, Profile
 
@@ -43,5 +43,8 @@ def make_cited_by(request, publication_id):
 
 def show_pdf(request, publication_id):
     pub = Publication.objects.get(pk=publication_id)
-    return FileResponse(open(pub.file.path, 'rb'), content_type='application/pdf')
+    try:
+        return FileResponse(open(pub.file.path, 'rb'), content_type='application/pdf')
+    except ValueError:
+        raise Http404("File has not been uploaded.")
 

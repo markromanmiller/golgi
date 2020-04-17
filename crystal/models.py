@@ -14,8 +14,8 @@ class NoPublicationFileError(ValueError):
 
 
 class Publication(models.Model):
-    file = models.FileField(blank=True)
-    author = models.CharField(max_length=100)
+    file = models.FileField(blank=True, max_length=500)
+    author = models.CharField(max_length=500)
     title = models.CharField(max_length=500)
     year = models.CharField(max_length=10, blank=True)
     url = models.CharField(max_length=500, blank=True)
@@ -202,7 +202,7 @@ class Publication(models.Model):
 
     def link(self):
         # if it's got a file, show the file
-        if self.file is not None:
+        if self.file:
             return reverse('show_pdf', kwargs={"publication_id": self.pk})
         # otherwise, make a Google Scholar link
         else:
