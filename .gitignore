@@ -1,7 +1,5 @@
 # Other ignores
 .idea
-*.pdf
-pdfs/
 venv/
 
 
