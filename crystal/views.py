@@ -57,3 +57,8 @@ def pub_status(request, publication_pk, status):
     pub.save()
     return redirect('inbox')
 
+
+def pub_page(request, publication_pk):
+    pub = Publication.objects.get(pk=publication_pk)
+    context = {"publication": pub}
+    return render(request, 'crystal/pub.html', context)

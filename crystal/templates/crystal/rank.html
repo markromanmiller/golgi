@@ -1,15 +1,16 @@
 
-<h1>Golgi: search less; read more.</p>
+<h1>Golgi: search less; read more.</h1>
 
 <h2>{{ network.project_title }}</h2>
 
 <h3> Selected publications </h3>
 <table>
-    <th>Document</th> <th>Title</th> <th>Go Back</th> <th>Go Forward</th>
+    <th>Document</th> <th>Title</th> <th>Edit</th> <th>Go Back</th> <th>Go Forward</th>
     {% for publication in selected_publications %}
     <tr>
-        <td><a href="{{ publication.link }}" target="_blank">[pdf]</a></td>
-        <td>{{ publication.title }}</td>
+        <td><a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a></td>
+        <td><a href="{% url 'pub_page' publication.pk %}" target="_blank">{{ publication.title }}</a></td>
+        <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
         <td>
             {% if publication.file %}
                 {% if publication.cites_calculated %}
@@ -37,8 +38,8 @@
     <th>Document</th><th>Title</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
     {% for publication in uploaded_publications %}
     <tr>
-        <td><a href="{{ publication.link }}" target="_blank">[pdf]</a></td>
-        <td>{{ publication.title }}</td>
+        <td><a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a></td>
+        <td><a href="{% url 'pub_page' publication.pk %}" target="_blank">{{ publication.title }}</a></td>
         <td>{{publication.n_related}}</td>
         <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
         <td><a href="{% url 'pub_status' publication.pk 'INCLUDED' %}">Include</a></td>
@@ -49,15 +50,17 @@
 
 <h3> Suggested Publications </h3>
 <table>
-    <th>Document</th><th>Title</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
+    <th>Document</th><th>Title</th><th>Year</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
     {% for publication in related_publications %}
     <tr>
-        <td><a href="{{ publication.link }}" target="_blank">[link]</a></td>
+        <td><a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a></td>
         <td>{{ publication.title }}</td>
-        <td>{{publication.n_related}}</td>
+        <td>{{ publication.year }}</td>
+        <td>{{ publication.n_related }}</td>
         <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
         <td><a href="{% url 'pub_status' publication.pk 'INCLUDED' %}">Include</a></td>
         <td><a href="{% url 'pub_status' publication.pk 'ARCHIVED' %}">Archive</a></td>
+        <td><a href="{% url 'pub_status' publication.pk 'UPLOADED' %}">Stage</a></td>
     </tr>
     {% endfor %}
 </table>

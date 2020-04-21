@@ -1,0 +1,39 @@
+
+<h2>{{ publication.title }}</h2>
+<h3>{{ publication.author }}</h3>
+<p>
+    <a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a>
+    <a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a>
+</p>
+
+<h3>Cites </h3>
+
+<table>
+    <th>Document</th><th>Title</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
+    {% for p in publication.cites.all %}
+    <tr>
+        <td><a href="{{ p.link }}" target="_blank">[{{ p.link_type }}]</a></td>
+        <td>{{ p.title }}</td>
+        <td>{{p.n_related}}</td>
+        <td><a href="{% url 'admin:crystal_publication_change' p.pk  %}">Edit</a></td>
+        <td><a href="{% url 'pub_status' p.pk 'INCLUDED' %}">Include</a></td>
+        <td><a href="{% url 'pub_status' p.pk 'ARCHIVED' %}">Archive</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Cited By </h3>
+
+<table>
+    <th>Document</th><th>Title</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
+    {% for p in publication.cited_by.all %}
+    <tr>
+        <td><a href="{{ p.link }}" target="_blank">[{{ p.link_type }}]</a></td>
+        <td>{{ p.title }}</td>
+        <td>{{p.n_related}}</td>
+        <td><a href="{% url 'admin:crystal_publication_change' p.pk  %}">Edit</a></td>
+        <td><a href="{% url 'pub_status' p.pk 'INCLUDED' %}">Include</a></td>
+        <td><a href="{% url 'pub_status' p.pk 'ARCHIVED' %}">Archive</a></td>
+    </tr>
+    {% endfor %}
+</table>

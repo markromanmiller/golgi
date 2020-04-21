@@ -13,20 +13,30 @@ class NoPublicationFileError(ValueError):
     pass
 
 
+class PublicationTag(models.Model):
+    # should tags be done per network or per publication?
+    # right now we're assuming all publications have their own network
+    # so the reference should be to each publication
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Publication(models.Model):
+    # properties of the Publication
     file = models.FileField(blank=True, max_length=500)
     author = models.CharField(max_length=500)
     title = models.CharField(max_length=500)
     year = models.CharField(max_length=10, blank=True)
     url = models.CharField(max_length=500, blank=True)
+
+    # citation management
     cites = models.ManyToManyField("self", related_name='cited_by', blank=True, symmetrical=False)
     cites_calculated = models.BooleanField(default=False)
     cited_by_calculated = models.BooleanField(default=False)
 
     # every publication needs a network to keep track of it
-    network = models.ForeignKey("Network", blank=False, null=False, on_delete=models.CASCADE)
-
-    # Constants in Model class
     INCLUDED = 'INCLUDED'
     ARCHIVED = 'ARCHIVED'
     UPLOADED = 'UPLOADED'
@@ -37,12 +47,17 @@ class Publication(models.Model):
         (UPLOADED, 'UPLOADED'),
         (SUGGESTED, 'SUGGESTED'),
     )
-
+    network = models.ForeignKey("Network", blank=False, null=False, on_delete=models.CASCADE)
     network_status = models.CharField(
         max_length=10,
         choices=NETWORK_STATUS_CHOICES,
         default=SUGGESTED
     )
+
+    # publication organization
+    tags = models.ManyToManyField("PublicationTag", blank=True)
+
+
 
     def __str__(self):
         return "{}, {}".format(self.author, self.title)
@@ -175,10 +190,15 @@ class Publication(models.Model):
                 matching_titles[0].save()
 
             else:
+                try:
+                    year = citation.bib['year']
+                except KeyError:
+                    year = ''  # don't need a year necessarily
 
                 new_entry = Publication(
                     author=citation.bib['author'],
                     title=citation.bib['title'],
+                    year=year,
                     network=self.network
                 )
                 new_entry.save()
@@ -207,6 +227,11 @@ class Publication(models.Model):
         # otherwise, make a Google Scholar link
         else:
             return "https://scholar.google.com/scholar?q={}".format(parse.quote(self.title, safe=""))
+
+    def link_type(self):
+        # TODO: should this merge with link? how do i put this in a logical place? view logic?
+        return 'pdf' if self.file else 'search'
+
 
     def include(self):
         self.network_status = Publication.INCLUDED
