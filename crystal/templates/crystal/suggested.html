@@ -1,0 +1,16 @@
+<h3> Suggested Publications </h3>
+<table class="table-sm table-striped">
+    <th>Document</th><th>Title</th><th>Year</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
+    {% for publication in related_publications %}
+    <tr>
+        <td><a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a></td>
+        <td>{{ publication.title }}</td>
+        <td>{{ publication.year }}</td>
+        <td>{{ publication.n_related }}</td>
+        <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
+        <td><a href="{% url 'pub_status' publication.pk 'INCLUDED' %}">Include</a></td>
+        <td><a href="{% url 'pub_status' publication.pk 'ARCHIVED' %}">Archive</a></td>
+        <td><a href="{% url 'pub_status' publication.pk 'UPLOADED' %}">Stage</a></td>
+    </tr>
+    {% endfor %}
+</table>

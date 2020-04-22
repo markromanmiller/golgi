@@ -1,0 +1,44 @@
+
+<h3> Selected publications </h3>
+
+{% regroup selected_publications by category_tag as selected_groups %}
+
+{% for category in selected_groups %}
+    {% if category.list|length %}
+        {% if category.grouper.name %}
+            <h4><a href="{% url 'admin:crystal_publicationtag_change' category.grouper.pk %}">
+                {{ category.grouper.name }}
+            </a></h4>
+        {% else %}
+            <h4> Uncategorized </h4>
+        {% endif %}
+        <table class="table-sm table-striped">
+            <th>Document</th> <th>Title</th> <th>Edit</th> <th>Go Back</th> <th>Go Forward</th>
+            {% for publication in category.list %}
+            <tr>
+                <td><a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a></td>
+                <td><a href="{% url 'pub_page' publication.pk %}" target="_blank">{{ publication.title }}</a></td>
+                <td><a href="{% url 'admin:crystal_publication_change' publication.pk %}">Edit</a></td>
+                <td>
+                    {% if publication.file %}
+                        {% if publication.cites_calculated %}
+                            Done
+                        {% else %}
+                            <a href="{% url 'make_cites' publication.pk %}">Make</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'admin:crystal_publication_change' publication.pk  %}"> Need File </a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if publication.cited_by_calculated %}
+                        Done
+                    {% else %}
+                        <a href="{% url 'make_cited_by' publication.pk %}">Make</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endfor %}

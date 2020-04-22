@@ -56,6 +56,10 @@ class Publication(models.Model):
 
     # publication organization
     tags = models.ManyToManyField("PublicationTag", blank=True)
+    category_tag = models.ForeignKey(
+        "PublicationTag", blank=True, null=True,
+        related_name='category_pubs', on_delete=models.SET_NULL
+    )
 
 
 

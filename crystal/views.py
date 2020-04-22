@@ -4,6 +4,13 @@ from .models import Publication, Profile
 from django.core.exceptions import ValidationError
 
 
+def set_no_cache_headers(response):
+    response["Cache-Control"] = "no-cache, no-store, must-revalidate"  # HTTP 1.1.
+    response["Pragma"] = "no-cache"  # HTTP 1.0.
+    response["Expires"] = "0"  # Proxies.
+    return response
+
+
 def inbox(request):
     user = request.user
     if user.is_anonymous:
@@ -16,13 +23,15 @@ def inbox(request):
     related_publications = [p for p in network.publication_set.filter(network_status=Publication.SUGGESTED)]
     related_publications.sort(key=lambda p : p.n_related(), reverse=True)
 
+    selected_publications = network.publication_set.filter(network_status=Publication.INCLUDED).order_by('category_tag')
+
     context = {
         'network': network,
-        'selected_publications': network.publication_set.filter(network_status=Publication.INCLUDED),
+        'selected_publications': selected_publications,
         'uploaded_publications': network.publication_set.filter(network_status=Publication.UPLOADED),
-        'related_publications': related_publications
+        'related_publications': related_publications,
     }
-    return render(request, 'crystal/rank.html', context)
+    return set_no_cache_headers(render(request, 'crystal/rank.html', context))
 
 
 def make_cites(request, publication_id):
@@ -61,4 +70,4 @@ def pub_status(request, publication_pk, status):
 def pub_page(request, publication_pk):
     pub = Publication.objects.get(pk=publication_pk)
     context = {"publication": pub}
-    return render(request, 'crystal/pub.html', context)
+    return set_no_cache_headers(render(request, 'crystal/pub.html', context))

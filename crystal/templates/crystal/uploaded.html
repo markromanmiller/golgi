@@ -1,0 +1,14 @@
+<h3> Uploaded Publications <a href="{% url 'admin:crystal_publication_add' %}" target="_blank">(new)</a></h3>
+<table class="table-sm table-striped">
+    <th>Document</th><th>Title</th><th>Relations</th><th>Edit</th><th>Include</th><th>Archive</th>
+    {% for publication in uploaded_publications %}
+    <tr>
+        <td><a href="{{ publication.link }}" target="_blank">[{{ publication.link_type }}]</a></td>
+        <td><a href="{% url 'pub_page' publication.pk %}" target="_blank">{{ publication.title }}</a></td>
+        <td>{{publication.n_related}}</td>
+        <td><a href="{% url 'admin:crystal_publication_change' publication.pk  %}">Edit</a></td>
+        <td><a href="{% url 'pub_status' publication.pk 'INCLUDED' %}">Include</a></td>
+        <td><a href="{% url 'pub_status' publication.pk 'ARCHIVED' %}">Archive</a></td>
+    </tr>
+    {% endfor %}
+</table>
