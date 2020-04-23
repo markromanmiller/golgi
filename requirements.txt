@@ -20,6 +20,7 @@ pyparsing==2.4.7
 python-dateutil==2.8.1
 python-Levenshtein==0.12.0
 pytz==2019.3
+scholarly==0.2.5
 six==1.14.0
 soupsieve==2.0
 sqlparse==0.3.1
