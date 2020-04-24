@@ -10,7 +10,6 @@ def set_no_cache_headers(response):
     response["Expires"] = "0"  # Proxies.
     return response
 
-
 def inbox(request):
     user = request.user
     if user.is_anonymous:
@@ -71,3 +70,28 @@ def pub_page(request, publication_pk):
     pub = Publication.objects.get(pk=publication_pk)
     context = {"publication": pub}
     return set_no_cache_headers(render(request, 'crystal/pub.html', context))
+
+
+def tabbed(request):
+    user = request.user
+    if user.is_anonymous:
+        return HttpResponse("Please <a href='admin/login/?next=/'>log in</a>")
+
+    network = Profile.objects.get(user=user).active_network
+    if network is None:
+        return HttpResponse("Choose an active network.")
+
+    related_publications = [p for p in network.publication_set.filter(network_status=Publication.SUGGESTED)]
+    related_publications.sort(key=lambda p : p.n_related(), reverse=True)
+
+    selected_publications = network.publication_set.filter(network_status=Publication.INCLUDED).order_by('category_tag')
+
+    context = {
+        'network': network,
+        'selected_publications': selected_publications,
+        'uploaded_publications': network.publication_set.filter(network_status=Publication.UPLOADED),
+        'related_publications': related_publications,
+    }
+    return set_no_cache_headers(render(request, 'crystal/tabbed.html', context))
+
+
