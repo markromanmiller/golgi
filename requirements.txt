@@ -2,6 +2,8 @@ arrow==0.15.5
 asgiref==3.2.7
 beautifulsoup4==4.9.0
 bibtexparser==1.1.0
+boto3==1.13.1
+botocore==1.16.1
 certifi==2020.4.5.1
 cffi==1.14.0
 chardet==3.0.4
@@ -9,10 +11,13 @@ cryptography==2.9
 dj-database-url==0.5.0
 Django==3.0.5
 django-heroku==0.3.1
+django-storages==1.9.1
+docutils==0.15.2
 future==0.18.2
 fuzzywuzzy==0.18.0
 gunicorn==20.0.4
 idna==2.9
+jmespath==0.9.5
 psycopg2==2.8.5
 pycparser==2.20
 pyOpenSSL==19.1.0
@@ -20,8 +25,11 @@ pyparsing==2.4.7
 python-dateutil==2.8.1
 python-Levenshtein==0.12.0
 pytz==2019.3
+requests==2.23.0
+s3transfer==0.3.3
 scholarly==0.2.5
 six==1.14.0
 soupsieve==2.0
 sqlparse==0.3.1
+urllib3==1.25.9
 whitenoise==5.0.1
