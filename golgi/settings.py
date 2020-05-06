@@ -25,7 +25,9 @@ SECRET_KEY = '*mfb$=rgol$%)g(35l9eejm^3f3z#rt3j4)sj%%@hz6qzgxj^s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'dr-golgi.herokuapp.com'
+]
 
 
 # Application definition
