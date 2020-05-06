@@ -1,5 +1,6 @@
 from django.http import HttpResponse, FileResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from .models import Publication, Profile
 from django.core.exceptions import ValidationError
 
@@ -10,6 +11,7 @@ def set_no_cache_headers(response):
     response["Expires"] = "0"  # Proxies.
     return response
 
+
 def inbox(request):
     user = request.user
     if user.is_anonymous:
@@ -17,7 +19,11 @@ def inbox(request):
 
     network = Profile.objects.get(user=user).active_network
     if network is None:
-        return HttpResponse("Choose an active network.")
+        return HttpResponse(
+            'Choose an active network on <a href="{}"> your profile page </a>'.format(
+                reverse('admin:crystal_profile_change', args=[user.pk])
+            )
+        )
 
     related_publications = [p for p in network.publication_set.filter(network_status=Publication.SUGGESTED)]
     related_publications.sort(key=lambda p : p.n_related(), reverse=True)
