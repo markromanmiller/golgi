@@ -5,8 +5,10 @@ import xml.etree.ElementTree as ET
 from fuzzywuzzy import process, fuzz
 from django.contrib.auth.models import User
 from scholarly import search_pubs_query
-from urllib import parse
+from urllib import parse, request
 from django.urls import reverse
+
+from golgi.storage_backends import PrivateMediaStorage
 
 
 class NoPublicationFileError(ValueError):
@@ -25,7 +27,7 @@ class PublicationTag(models.Model):
 
 class Publication(models.Model):
     # properties of the Publication
-    file = models.FileField(blank=True, max_length=500)
+    file = models.FileField(blank=True, max_length=500, storage=PrivateMediaStorage())
     author = models.CharField(max_length=500)
     title = models.CharField(max_length=500)
     year = models.CharField(max_length=10, blank=True)
@@ -61,8 +63,6 @@ class Publication(models.Model):
         related_name='category_pubs', on_delete=models.SET_NULL
     )
 
-
-
     def __str__(self):
         return "{}, {}".format(self.author, self.title)
 
@@ -72,14 +72,15 @@ class Publication(models.Model):
             return
 
         # make a tmp dir and tmp file
+        # TODO: handle file issues gracefully
         tmpdir = tempfile.TemporaryDirectory()
         tmp_filename = os.path.join(tmpdir.name, "pub.pdf")
         tmp_copy = open(tmp_filename, 'wb')
         # TODO: what if it's not a PDF?
 
         # copy over the pdf
-        db_file = self.file.open('rb')
-        tmp_copy.write(db_file.read())
+        file_request = request.urlopen(self.file.url)
+        tmp_copy.write(file_request.read())
         tmp_copy.close()
         print(os.path.getsize(tmp_filename))
 
@@ -235,7 +236,6 @@ class Publication(models.Model):
     def link_type(self):
         # TODO: should this merge with link? how do i put this in a logical place? view logic?
         return 'pdf' if self.file else 'search'
-
 
     def include(self):
         self.network_status = Publication.INCLUDED
