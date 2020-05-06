@@ -146,4 +146,4 @@ PRIVATE_FILE_STORAGE = 'golgi.storage_backends.PrivateMediaStorage'
 
 
 # Configure Django App for Heroku.
-#django_heroku.settings(locals())
+django_heroku.settings(locals())
