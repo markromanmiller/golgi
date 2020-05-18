@@ -7,7 +7,7 @@
 <div class="container">
 <h1>Golgi: search less; read more.</h1>
 
-<h2>{{ network.project_title }}</h2>
+<h2>{{ network.project_title }}<a href="{% url 'admin:crystal_profile_change' network.owner.pk %}">(switch)</a></h2>
 
 {% include 'crystal/selected.html' %}
 
