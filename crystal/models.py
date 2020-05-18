@@ -119,6 +119,9 @@ class Publication(models.Model):
             # year
             try:
                 year = citation_spec.find("year").text
+                if len(year) > 10:
+                    # that's unrealistic, say it's "No Year"
+                    year = "No Year"
             except AttributeError:
                 year = "No Year"
             # first author
