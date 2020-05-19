@@ -1,1 +1,1 @@
-web: gunicorn golgi.wsgi
+web: gunicorn golgi.wsgi --timeout 60
