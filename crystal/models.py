@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from scholarly import search_pubs_query
 from urllib import parse, request
 from django.urls import reverse
+from time import sleep
 
 from golgi.storage_backends import PrivateMediaStorage
 
@@ -173,6 +174,8 @@ class Publication(models.Model):
         search_query = search_pubs_query(self.title)
         pub = next(search_query).fill()
         print(pub)
+        sleep(5)
+
 
         too_common = ["No Title Found", "and"]
 
@@ -180,6 +183,8 @@ class Publication(models.Model):
 
         # Which papers cited that publication?
         for citation in pub.get_citedby():
+            print(citation)
+            sleep(.5) # 5 seconds over 10 pages, that's reasonable.
 
             title = citation.bib['title']
 
